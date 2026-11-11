@@ -1,0 +1,247 @@
+VEHICLE RENTAL MANAGEMENT SYSTEM - TEST CASES (84 tests)
+============================================================
+
+Part 2: Test Cases
+ 84 automated tests: 84 passed, 0 failed. The Actual column is the real output of the last run. For the constraint
+ tests, "Rejected with error" means the database refused the bad data, which is the correct behaviour.
+
+ Structure (database objects exist)
+  ID         Test                                                    Expected              Actual                Result
+
+  TC-01      Database has 10 tables                                  10                    10                    PASS
+
+  TC-02      Both views exist                                        2                     2                     PASS
+
+  TC-03      Trigger trg_return_vehicle_available exists             1                     1                     PASS
+
+  TC-04      Four stored procedures exist (sp_*)                     4                     4                     PASS
+
+  TC-05      Index idx_booking_customer exists                       1                     1                     PASS
+
+  TC-06      Every table has a PRIMARY KEY (tables without one)      0                     0                     PASS
+
+  TC-07      Ten FOREIGN KEY constraints are defined                 10                    10                    PASS
+
+ Constraints (bad data must be rejected)
+  ID         Test                                                    Expected              Actual                Result
+
+  TC-10      Duplicate customer phone is rejected                    Rejected with error   Rejected with error   PASS
+
+  TC-11      Duplicate customer email is rejected                    Rejected with error   Rejected with error   PASS
+
+  TC-12      Duplicate driving licence number is rejected            Rejected with error   Rejected with error   PASS
+
+  TC-13      Duplicate vehicle registration number is rejected       Rejected with error   Rejected with error   PASS
+
+  TC-14      Booking with end_date before start_date is rejected     Rejected with error   Rejected with error   PASS
+             (CHECK)
+
+  TC-15      Category with daily_rate = 0 is rejected (CHECK)        Rejected with error   Rejected with error   PASS
+
+  TC-16      Payment with amount = 0 is rejected (CHECK)             Rejected with error   Rejected with error   PASS
+
+  TC-17      Maintenance with negative cost is rejected (CHECK)      Rejected with error   Rejected with error   PASS
+
+  TC-18      Booking for a non-existent customer is rejected (FK)    Rejected with error   Rejected with error   PASS
+
+  TC-19      Booking for a non-existent vehicle is rejected (FK)     Rejected with error   Rejected with error   PASS
+
+  TC-20      Second agreement for the same booking is rejected       Rejected with error   Rejected with error   PASS
+             (UNIQUE)
+
+  TC-21      Second return for the same agreement is rejected        Rejected with error   Rejected with error   PASS
+             (UNIQUE)
+
+  TC-22      Invalid vehicle status value is rejected (ENUM)         Rejected with error   Rejected with error   PASS
+
+  TC-23      Deleting a customer who has bookings is rejected (FK    Rejected with error   Rejected with error   PASS
+             RESTRICT)
+
+  TC-24      Customer with NULL full_name is rejected (NOT NULL)     Rejected with error   Rejected with error   PASS
+
+  TC-25      Deleting a category that has vehicles is rejected (FK   Rejected with error   Rejected with error   PASS
+             RESTRICT)
+
+  TC-26      Penalty with negative amount is rejected (CHECK)        Rejected with error   Rejected with error   PASS
+
+  TC-27      Return with negative days_late is rejected (CHECK)      Rejected with error   Rejected with error   PASS
+
+ Defaults and ON DELETE behaviour
+  ID         Test                                                    Expected              Actual                Result
+
+  TC-30      New vehicle gets status = Available by default          Available             Available             PASS
+
+  TC-31      New customer gets registered_date = today by default    1                     1                     PASS
+
+  TC-32      vehicle_returns.days_late defaults to 0                 0                     0                     PASS
+
+  ID         Test                                                      Expected        Actual          Result
+
+  TC-33      Deleting a referrer sets referred_by to NULL (ON          NULL            NULL            PASS
+             DELETE SET NULL)
+
+ Queries, joins, views and reports
+  ID         Test                                                      Expected        Actual          Result
+
+  TC-40      Available-vehicles view returns 9 vehicles                9               9               PASS
+
+  TC-41      Cheapest available car costs 1500.00 per day              1500.00         1500.00         PASS
+
+  TC-42      Booking 1 (5 Jan - 8 Jan) is 4 rental days                4               4               PASS
+
+  TC-43      Two cities have more than 2 customers                     2               2               PASS
+
+  TC-44      Three vehicles have never been booked                     3               3               PASS
+
+  TC-45      Second-highest daily rate is 4500.00                      4500.00         4500.00         PASS
+
+  TC-46      SELF JOIN: Priya Sharma was referred by Arjun Reddy       Arjun Reddy     Arjun Reddy     PASS
+
+  TC-47      RIGHT JOIN: the category without vehicles is Mini Van     Mini Van        Mini Van        PASS
+
+  TC-48      Overdue report lists exactly 1 rental                     1               1               PASS
+
+  TC-49      The overdue vehicle TS09CD2002 is 2 days overdue          2               2               PASS
+
+  TC-50      Vehicle-wise income for vehicle 3 (Honda City) =          20400.00        20400.00        PASS
+             20400.00
+
+  TC-51      Vehicle that was never rented earns 0.00                  0.00            0.00            PASS
+
+  TC-52      Monthly revenue for 2026-01 = 14700.00                    14700.00        14700.00        PASS
+
+  TC-53      Total of all payments = 108330.00                         108330.00       108330.00       PASS
+
+ Penalty rules
+  ID         Test                                                      Expected        Actual          Result
+
+  TC-54      Late-return penalty = days_late x late_fee_per_day        0               0               PASS
+             (mismatches)
+
+  TC-55      Return 2 total penalty = 600 late + 1500 damage =         2100.00         2100.00         PASS
+             2100.00
+
+  TC-78      Returned 2 days after end date: days_late = 2             2               2               PASS
+
+  TC-79      Late penalty = 2 days x 300 = 600.00                      600.00          600.00          PASS
+
+  TC-80      Total penalty = 600 late + 500 damage + 250 fuel =        1350.00         1350.00         PASS
+             1350.00
+
+  TC-81      Three penalty rows created (Late, Damage, Fuel)           3               3               PASS
+
+  TC-82      Final payment = balance 3300 + penalties 1350 =           4650.00         4650.00         PASS
+             4650.00
+
+ Data integrity checks
+  ID         Test                                                      Expected        Actual          Result
+
+  TC-56      Returned agreements: payments = total + penalties         0               0               PASS
+             (mismatches)
+
+  TC-57      days_late matches return_date vs end_date                 0               0               PASS
+             (mismatches)
+
+  TC-58      Number of Rented vehicles = number of open Active         2               2               PASS
+             rentals
+
+  TC-59      Agreement total = daily rate x rental days (mismatches)   0               0               PASS
+
+  TC-93      After clean-up the Available count is back to 9           9               9               PASS
+
+  TC-94      Row counts restored                                       15/13/24/11/7   15/13/24/11/7   PASS
+             (bookings/agreements/payments/returns/penalties)
+
+ Stored procedures
+  ID         Test                                                           Expected                 Actual                   Result
+
+  TC-60      sp_book_vehicle sets the vehicle to Rented                     Rented                   Rented                   PASS
+
+  TC-61      sp_book_vehicle agreement total = 1500 x 3 days =              4500.00                  4500.00                  PASS
+             4500.00
+
+  TC-62      sp_book_vehicle records a 50% advance payment                  2250.00                  2250.00                  PASS
+             (2250.00)
+
+  TC-63      sp_book_vehicle creates the booking with status Active         Active                   Active                   PASS
+
+  TC-64      Booking a Rented vehicle is rejected                           Rejected with error      Rejected with error      PASS
+
+  TC-65      Booking a vehicle under Maintenance is rejected                Rejected with error      Rejected with error      PASS
+
+  TC-66      Booking with end date before start date is rejected            Rejected with error      Rejected with error      PASS
+
+  TC-67      Booking for a non-existent customer is rejected                Rejected with error      Rejected with error      PASS
+
+  TC-68      Booking a non-existent vehicle is rejected                     Rejected with error      Rejected with error      PASS
+
+  TC-69      Invalid payment mode rolls the whole booking back              Rejected with error      Rejected with error      PASS
+
+  TC-70      Rejected bookings leave no new booking rows                    0                        0                        PASS
+
+  TC-71      Rejected bookings leave no new payment rows                    0                        0                        PASS
+
+  TC-72      Vehicle 7 is still Available after the failed bookings         Available                Available                PASS
+
+  TC-73      On-time return has total penalty 0.00                          0.00                     0.00                     PASS
+
+  TC-76      Final payment on an on-time return = unpaid balance            2250.00                  2250.00                  PASS
+             2250.00
+
+  TC-77      On-time return creates no penalty rows                         0                        0                        PASS
+
+  TC-84      Returning the same agreement twice is rejected                 Rejected with error      Rejected with error      PASS
+
+  TC-85      Returning a non-existent agreement is rejected                 Rejected with error      Rejected with error      PASS
+
+  TC-86      Return date before the rental start date is rejected           Rejected with error      Rejected with error      PASS
+
+ Trigger
+  ID         Test                                                           Expected                 Actual                   Result
+
+  TC-74      Trigger sets the vehicle back to Available after a return      Available                Available                PASS
+
+  TC-75      Trigger marks the booking Completed after a return             Completed                Completed                PASS
+
+  TC-83      Vehicle 3 is Available again after the late return             Available                Available                PASS
+
+  TC-87      Before the return, vehicle 4 is Rented                         Rented                   Rented                   PASS
+
+  TC-88      Direct INSERT into vehicle_returns makes vehicle 4             Available                Available                PASS
+             Available
+
+ Transactions
+  ID         Test                                                           Expected                 Actual                   Result
+
+  TC-89      ROLLBACK undoes the inserted booking                           0                        0                        PASS
+
+  TC-90      ROLLBACK undoes the status change (vehicle 12                  Available                Available                PASS
+             Available)
+
+  TC-91      COMMIT keeps the inserted booking                              1                        1                        PASS
+
+  TC-92      COMMIT keeps the status change (vehicle 12 Rented)             Rented                   Rented                   PASS
+
+ Manual checks (procedures that return a result set)
+ ID        Command                                                    Expected output
+
+ M-01      CALL sp_customer_history(1);                               2 rows for Arjun Reddy: booking 1 (TS09AB1001, total 6000, paid
+                                                                      6000) and booking 6 (TS09AB1002, total 4500, paid 4500)
+
+ ID        Command                                           Expected output
+
+ M-02      CALL sp_monthly_revenue(2026);                    2026-01: 14700, 2026-02: 19930, 2026-03: 5850, 2026-04: 11700,
+                                                             2026-05: 2700, 2026-06: 18200, 2026-07: 10500, 2026-08: 10500,
+                                                             plus the current month
+
+ M-03      EXPLAIN SELECT * FROM bookings_big WHERE          Before index: type = ALL, about 100000 rows. After index: type = ref,
+           customer_id = 7; (file 06)                        about 200 rows
+
+ Notes
+ • Tests TC-60 to TC-92 create bookings, payments and returns through the procedures; TC-93 and TC-94 delete
+ them again, so the suite can be run repeatedly.
+ • Overdue and "current rental" tests depend on CURDATE(). The sample data uses date offsets, so they pass on
+ any day.
+ • While writing these tests TC-70 caught a real bug: an invalid payment_mode (a warning-class error in strict
+ mode) was not rolled back by sp_book_vehicle. The procedures' handlers now cover SQLWARNING as well as
+ SQLEXCEPTION.
